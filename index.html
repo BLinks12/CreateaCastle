@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Create Your Castle - Your Unique Castle</title>
+    <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'MedievalSharp', cursive;
+            background: linear-gradient(to bottom, #2e2e3e, #1a1a25),
+                        url('https://example.com/subtle-castle-pattern.png');
+            background-repeat: repeat;
+            background-size: cover;
+            background-blend-mode: multiply;
+            color: #f0e6d6;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+
+        .hero {
+            padding: 50px 20px;
+            background: url('https://example.com/castle-forest.jpg') center/cover no-repeat;
+            position: relative;
+        }
+
+        .hero::after {
+            content: "";
+            position: absolute;
+            top:0; left:0; right:0; bottom:0;
+            background: rgba(0,0,0,0.4);
+        }
+
+        .hero > * {
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero h1 {
+            font-size: 3.5em;
+            color: #b0a27e;
+            text-shadow: 3px 3px 5px #000;
+            margin-bottom: 20px;
+        }
+
+        .hero p {
+            font-size: 1.5em;
+            margin: 20px 0;
+            color: #f0e6d6;
+        }
+
+        .hero .links {
+            margin-top: 20px;
+        }
+
+        .hero a {
+            color: #d4af37;
+            text-decoration: none;
+            font-size: 1.2em;
+            margin: 0 10px;
+            transition: color 0.3s;
+        }
+
+        /* Add a castle icon before the navigation links */
+        .hero a[href="#castle-lore"]::before {
+            content: "🏰 ";
+        }
+
+        .hero a:hover {
+            color: #fff5b2;
+        }
+
+        .generator {
+            margin: 30px 0;
+            padding: 20px;
+            background: rgba(80,70,70,0.7);
+            border: 2px solid #b0a27e;
+            border-radius: 15px;
+            display: inline-block;
+        }
+
+        .generator input {
+            font-size: 1.2em;
+            padding: 10px;
+            width: 300px;
+            margin: 10px;
+            border-radius: 10px;
+            border: 1px solid #333;
+            background: #f0e6d6;
+            color: #1a1a25;
+        }
+
+        .generator button {
+            font-size: 1.2em;
+            padding: 10px 20px;
+            background: #b0a27e;
+            color: #1a1a25;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .generator button:hover {
+            background: #d4af37;
+        }
+
+        .loading-container {
+            display: none;
+            margin: 20px auto;
+        }
+
+        .loading-text {
+            color: #b0a27e;
+            font-size: 1.5em;
+            margin-top: 10px;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #2e2e3e;
+            border-top: 5px solid #b0a27e;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .castle-showcase {
+            margin: 50px 0;
+        }
+
+        .castle-showcase h2 {
+            color: #b0a27e;
+            text-shadow: 2px 2px 4px #000;
+        }
+
+        .castle {
+            display: inline-block;
+            margin: 20px;
+            padding: 15px;
+            border: 2px solid #333;
+            border-radius: 10px;
+            background: rgba(51,51,51,0.8);
+            color: #b0a27e;
+            text-align: left;
+            font-size: 1em;
+            white-space: pre;
+            overflow-x: auto;
+            position: relative;
+            width: 300px;
+        }
+
+        .castle p {
+            margin: 5px 0;
+        }
+
+        .download-btn, .share-btn {
+            margin-top: 10px;
+            font-size: 1em;
+            padding: 8px 16px;
+            background: #b0a27e;
+            color: #1a1a25;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            display: inline-block;
+            margin-right: 10px;
+            transition: background 0.3s;
+        }
+
+        .download-btn:hover, .share-btn:hover {
+            background: #d4af37;
+        }
+
+        .share-btn {
+            background: #1DA1F2; /* Twitter Blue */
+            color: #fff;
+        }
+
+        .share-btn:hover {
+            background: #40a9f3;
+        }
+
+        .info-section {
+            max-width: 800px;
+            margin: 50px auto;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 30px;
+            border-radius: 10px;
+            text-align: left;
+        }
+
+        .info-section h2 {
+            text-align: center;
+            color: #b0a27e;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px #000;
+        }
+
+        /* Add a castle icon before "Castle Lore & Myths" */
+        #castle-lore h2::before {
+            content: "🏰 ";
+        }
+
+        .info-section p {
+            line-height: 1.5;
+            margin-bottom: 15px;
+            color: #f0e6d6;
+        }
+
+        /* New Section: Unique Castle Generation */
+        #unique-generation {
+            max-width: 800px;
+            margin: 50px auto;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 30px;
+            border-radius: 10px;
+            text-align: left;
+        }
+
+        #unique-generation h2 {
+            text-align: center;
+            color: #b0a27e;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px #000;
+        }
+
+        #unique-generation p {
+            line-height: 1.5;
+            margin-bottom: 15px;
+            color: #f0e6d6;
+        }
+
+        footer {
+            padding: 20px 0;
+            background: #1a1a25;
+            color: #888;
+            margin-top: 50px;
+            font-size: 0.9em;
+        }
+
+        @media (max-width: 600px) {
+            .castle {
+                width: 90%;
+            }
+
+            .generator input {
+                width: 80%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="hero">
+        <h1>Your Castle Awaits</h1>
+        <p>Enter your Solana wallet address below and discover your unique Castle in the enchanted realm!</p>
+        <div class="links">
+            <a href="#castle-lore">Castle Lore & Myths</a>
+        </div>
+    </div>
+
+    <div class="generator">
+        <input type="text" id="wallet-address" placeholder="Enter your Solana wallet address...">
+        <button id="generate-button">Generate My Castle</button>
+    </div>
+
+    <div class="loading-container" id="loading-container">
+        <div class="spinner"></div>
+        <p class="loading-text">Constructing Stone Walls & Towering Spires...</p>
+    </div>
+
+    <div class="castle-showcase" id="castle-showcase">
+        <h2>Your Castle</h2>
+        <!-- Generated castle will appear here -->
+    </div>
+
+    <!-- Castle Lore & Myths Section -->
+    <div class="info-section" id="castle-lore">
+        <h2>Castle Lore & Myths</h2>
+        <p>Before the rise of human kingdoms, the ancient Castles stood as bastions of magic and mystery. The Castle Folk, known by their noble surnames, built these grand structures atop hilltops and within enchanted forests, each reflecting their unique craft, legacy, and devotion to the arcane arts. These majestic abodes are centers of wisdom and strength, where the echoes of legendary battles intertwine with the songs of mystical creatures.</p>
+        
+        <p>In the Castle Realm, every castle tells a story. A towering spire might indicate a lineage of sorcerers, while fortified walls could signify a family's prowess in defense. Decorations such as heraldic banners or enchanted gates whisper tales of valor and enchantment. Within, Castle families cultivate enchanted gardens, forge magical artifacts, and safeguard ancient tomes that hold the secrets of the realm.</p>
+        
+        <p>These castles are intrinsically linked to the land, influenced by the blessings of elemental spirits and nourished by sacred springs. Over generations, each family's legacy expands as new additions are made—elaborate battlements, intricate stained glass windows, or enchanted turrets that shimmer under moonlight.</p>
+        
+        <p>To the wandering traveler, these grand structures may seem imposing. But spend a night within a castle's grand hall, and you might leave with tales of heroism, a magical artifact bestowed in honor, and a heart touched by the timeless magic. As the ancient castle proverb states: “Within stone walls and enchanted halls, the true essence of magic calls.”</p>
+    </div>
+
+    <!-- Unique Castle Generation Section -->
+    <div class="info-section" id="unique-generation">
+        <h2>Why Your Castle is Unique</h2>
+        <p>At **Create Your Castle**, every castle is a masterpiece crafted just for you. Leveraging **deterministic algorithms**, your Solana wallet address is transformed into a unique set of traits that define your castle’s architecture, materials, and decorations. This ensures that no two castles are the same, making each one a true digital marvel.</p>
+        
+        <p>Our integration of **advanced AI technology** analyzes your wallet data to create intricate and diverse castle designs. From rare roof styles like the **Enchanted Turret** to exclusive decorations such as **Mystic Gardens**, every element of your castle is thoughtfully generated to reflect both medieval grandeur and modern innovation.</p>
+        
+        <p>Harnessing the power of **blockchain**, your castle is securely tied to your wallet, guaranteeing its uniqueness and your ownership. This immutable connection ensures that your castle remains one-of-a-kind and can be seamlessly integrated into the broader **CryptoCastles** ecosystem for trading, upgrading, and even minting as NFTs.</p>
+        
+        <p>Join our community and own a piece of the enchanted realm where art meets technology. With **Create Your Castle**, you’re not just generating a digital asset—you’re building a legacy.</p>
+    </div>
+
+    <footer>
+        © 2024 Create Your Castle | Majestic Strongholds in the Enchanted Realm
+    </footer>
+
+    <script>
+    (function() {
+        const walletInput = document.getElementById('wallet-address');
+        const generateButton = document.getElementById('generate-button');
+        const castleShowcase = document.getElementById('castle-showcase');
+        const loadingContainer = document.getElementById('loading-container');
+
+        // Castle Generation Configuration
+        const ROOF_TYPES = [
+            "Tiled Roof", 
+            "Battlement Spire", 
+            "Moss-Covered Roof", 
+            "Enchanted Turret", 
+            "Thatched Roof"
+        ];
+
+        const WALL_MATERIALS = [
+            "Stone Walls", 
+            "Brick Walls", 
+            "Marble Walls", 
+            "Ironclad Walls",
+            "Glass-Paneed Walls"
+        ];
+
+        const DECORATIONS = [
+            "Heraldic Banners", 
+            "Enchanted Gates", 
+            "Stained Glass Windows", 
+            "Magical Lanterns", 
+            "Mystic Gardens"
+        ];
+
+        const CASTLE_FAMILIES = [
+            "Stoneheart",
+            "Ironfist",
+            "Marblecrest",
+            "Brickwell",
+            "Glassbrook",
+            "Ironspire",
+            "Mossvale",
+            "Turbine",
+            "Stonemantle",
+            "Shadowgate"
+        ];
+
+        function validateWalletAddress(address) {
+            const solanaAddressRegex = /^[1-9A-HJ-NP-Za-km-z]{32,44}$/;
+            return solanaAddressRegex.test(address);
+        }
+
+        function hashAddress(address) {
+            let hash = 0;
+            for (let i = 0; i < address.length; i++) {
+                const char = address.charCodeAt(i);
+                hash = ((hash << 5) - hash) + char;
+                hash = hash & hash; // Convert to 32-bit integer
+            }
+            return Math.abs(hash);
+        }
+
+        function generateCastle(hash) {
+            const roofIndex = hash % ROOF_TYPES.length;
+            const wallIndex = (hash >> 2) % WALL_MATERIALS.length;
+            const decorIndex = (hash >> 4) % DECORATIONS.length;
+            const familyIndex = (hash >> 6) % CASTLE_FAMILIES.length;
+            const grandeurLevel = (hash % 100) + 1;
+
+            const roof = ROOF_TYPES[roofIndex];
+            const walls = WALL_MATERIALS[wallIndex];
+            const decor = DECORATIONS[decorIndex];
+            const familyName = CASTLE_FAMILIES[familyIndex];
+
+            // Create ASCII Castle (simple example)
+            // Vary the structure based on the chosen roof type
+            let roofSymbol;
+            if (roof.includes("Battlement")) {
+                roofSymbol = "🏰";
+            } else if (roof.includes("Enchanted")) {
+                roofSymbol = "✨🏰✨";
+            } else if (roof.includes("Moss")) {
+                roofSymbol = "🌿🏰🌿";
+            } else {
+                roofSymbol = "🏰";
+            }
+
+            const wallSymbol = (walls.includes("Stone")) ? "|||" : "###";
+            const windowSymbol = "[ ]";
+            const doorSymbol = "| || |";
+
+            const asciiArt = `
+        ${roofSymbol}
+       ${wallSymbol} ${windowSymbol} ${wallSymbol}
+       ${wallSymbol} ${doorSymbol} ${wallSymbol}
+       ${wallSymbol}${wallSymbol}${wallSymbol}${wallSymbol}${wallSymbol}${wallSymbol}${wallSymbol}
+    `;
+
+            return {
+                familyName,
+                roof,
+                walls,
+                decor,
+                grandeurLevel,
+                asciiArt
+            };
+        }
+
+        function showLoading() {
+            loadingContainer.style.display = 'block';
+            castleShowcase.innerHTML = '<h2>Your Castle</h2>';
+        }
+
+        function hideLoading() {
+            loadingContainer.style.display = 'none';
+        }
+
+        function displayCastle(castle) {
+            const castleCard = document.createElement('div');
+            castleCard.className = 'castle';
+            castleCard.innerHTML = `
+    ${castle.asciiArt}
+    <p><strong>Castle Family:</strong> The ${castle.familyName} Family</p>
+    <p><strong>Roof Type:</strong> ${castle.roof}</p>
+    <p><strong>Wall Material:</strong> ${castle.walls}</p>
+    <p><strong>Decorations:</strong> ${castle.decor}</p>
+    <p><strong>Grandeur Level:</strong> ${castle.grandeurLevel}/100</p>
+            `;
+
+            const downloadButton = document.createElement('button');
+            downloadButton.className = 'download-btn';
+            downloadButton.textContent = 'Download Castle Details';
+            downloadButton.addEventListener('click', () => downloadCastle(castle));
+
+            const shareButton = document.createElement('button');
+            shareButton.className = 'share-btn';
+            shareButton.textContent = 'Share on X';
+            shareButton.addEventListener('click', () => shareOnX(castle));
+
+            castleCard.appendChild(downloadButton);
+            castleCard.appendChild(shareButton);
+
+            castleShowcase.appendChild(castleCard);
+        }
+
+        function downloadCastle(castle) {
+            const castleDetails = `
+    Castle Details:
+    ---------------
+    Family: The ${castle.familyName} Family
+    Roof Type: ${castle.roof}
+    Wall Material: ${castle.walls}
+    Decorations: ${castle.decor}
+    Grandeur Level: ${castle.grandeurLevel}/100
+
+    ASCII Art:
+    ${castle.asciiArt}
+            `;
+
+            const blob = new Blob([castleDetails], { type: 'text/plain' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `${castle.familyName}_Castle.txt`;
+            link.click();
+        }
+
+        function shareOnX(castle) {
+            const castleDetails = `I just created my unique Castle! 🏰✨
+
+Family: The ${castle.familyName} Family
+Roof: ${castle.roof}
+Walls: ${castle.walls}
+Decor: ${castle.decor}
+Grandeur: ${castle.grandeurLevel}/100
+
+Join the Castle Realm! #CreateYourCastle #CASTLE #CryptoCastles
+
+@YourCastleProjectHandle`;
+
+            const tweetUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(castleDetails)}`;
+            window.open(tweetUrl, '_blank');
+        }
+
+        generateButton.addEventListener('click', () => {
+            const walletAddress = walletInput.value.trim();
+
+            if (!validateWalletAddress(walletAddress)) {
+                alert('Please enter a valid Solana wallet address!');
+                return;
+            }
+
+            showLoading();
+
+            setTimeout(() => {
+                const hash = hashAddress(walletAddress);
+                const castle = generateCastle(hash);
+
+                hideLoading();
+                displayCastle(castle);
+            }, 2000);
+        });
+    })();
+    </script>
+</body>
+</html>
